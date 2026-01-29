@@ -1,0 +1,75 @@
+external_components:
+  - source:
+      type: git
+      url: https://github.com/gelidusresearch/esphome-secplus-gdo
+      ref: ${branch}
+    components: [ secplus_gdo ]
+    refresh: 1s
+  # - source:
+  #     type: local
+  #     path: components
+
+secplus_gdo:
+  id: ${id_prefix}
+  tof_sda_pin: ${tof_sda_pin}
+  tof_scl_pin: ${tof_scl_pin}
+
+sensor:
+  - platform: secplus_gdo
+    secplus_gdo_id: ${id_prefix}
+    id: gdo_tof_distance
+    name: "Vehicle Measured Distance"
+    type: tof_distance
+    unit_of_measurement: "cm"
+    internal: true
+    filters:
+      - heartbeat: 250ms
+      - throttle: 1s
+
+  - platform: copy
+    source_id: gdo_tof_distance
+    name: Vehicle Distance Measure Filtered
+    filters:
+      - quantile:           # remove outliers that are not in the 90th percentile
+          window_size: 16
+          send_every: 1
+          quantile: 0.9
+      - heartbeat: 2s
+
+binary_sensor:
+  - platform: secplus_gdo
+    secplus_gdo_id: ${id_prefix}
+    id: gdo_vehicle_parked
+    type: vehicle_parked
+    name: "Vehicle parked"
+
+  - platform: secplus_gdo
+    secplus_gdo_id: ${id_prefix}
+    id: gdo_vehicle_arriving
+    type: vehicle_arriving
+    name: "Vehicle arriving"
+
+  - platform: secplus_gdo
+    secplus_gdo_id: ${id_prefix}
+    id: gdo_vehicle_leaving
+    type: vehicle_leaving
+    name: "Vehicle leaving"
+
+number:
+  - platform: secplus_gdo
+    name: "Vehicle Parked Threshold"
+    secplus_gdo_id: ${id_prefix}
+    entity_category: config
+    id: gdo_vehicle_parked_threshold
+    type: vehicle_parked_threshold
+    mode: box
+    unit_of_measurement: "cm"
+
+  - platform: secplus_gdo
+    name: "Vehicle Parked Threshold Variance"
+    secplus_gdo_id: ${id_prefix}
+    entity_category: config
+    id: gdo_vehicle_parked_threshold_variance
+    type: vehicle_parked_threshold_variance
+    mode: box
+    unit_of_measurement: "cm"

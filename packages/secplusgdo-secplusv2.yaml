@@ -1,0 +1,254 @@
+external_components:
+  - source:
+      type: git
+      url: https://github.com/gelidusresearch/esphome-secplus-gdo
+      ref: ${branch}
+    components: [ secplus_gdo ]
+    refresh: 1s
+  # - source:
+  #     type: local
+  #     path: components
+
+secplus_gdo:
+  id: ${id_prefix}
+  input_gdo_pin: ${uart_rx_pin}
+  output_gdo_pin: ${uart_tx_pin}
+  input_obst_pin: ${input_obst_pin}
+
+light:
+  - platform: secplus_gdo
+    name: Garage Door Light
+    secplus_gdo_id: ${id_prefix}
+    id: gdo_light
+
+cover:
+  - platform: secplus_gdo
+    name: Garage Door
+    secplus_gdo_id: ${id_prefix}
+    id: gdo_door
+
+text_sensor:
+  - platform: version
+    name: ESPHome Version
+    hide_timestamp: true
+
+sensor:
+  - platform: secplus_gdo
+    secplus_gdo_id: ${id_prefix}
+    id: gdo_openings
+    type: openings
+    name: "Garage Door Openings"
+    unit_of_measurement: "openings"
+    icon: mdi:open-in-app
+
+lock:
+  - platform: secplus_gdo
+    id: gdo_lock_remotes
+    secplus_gdo_id: ${id_prefix}
+    name: "Lock remotes"
+
+binary_sensor:
+  - platform: secplus_gdo
+    name: "Garage Motion Sensor"
+    id: gdo_motion
+    secplus_gdo_id: ${id_prefix}
+    device_class: motion
+    type: motion
+  - platform: secplus_gdo
+    name: "Garage Door Obstruction Sensor"
+    id: gdo_obst
+    secplus_gdo_id: ${id_prefix}
+    device_class: problem
+    type: obstruction
+  - platform: secplus_gdo
+    name: "Garage Door Motor"
+    id: gdo_motor
+    secplus_gdo_id: ${id_prefix}
+    device_class: running
+    type: motor
+  - platform: secplus_gdo
+    name: "Garage Button"
+    id: gdo_button
+    secplus_gdo_id: ${id_prefix}
+    entity_category: diagnostic
+    type: button
+  - platform: secplus_gdo
+    name: $garage_sync_name
+    id: gdo_synced
+    secplus_gdo_id: ${id_prefix}
+    type: sync
+    device_class: connectivity
+
+  - platform: gpio
+    id: "${id_prefix}_dry_contact_open"
+    pin:
+      number: ${dry_contact_open_pin}  #  dry contact for opening door
+      inverted: true
+      mode:
+        input: true
+        pullup: true
+    name: "Dry contact open"
+    entity_category: diagnostic
+    on_press:
+      - if:
+          condition:
+            binary_sensor.is_off: ${id_prefix}_dry_contact_close
+          then:
+            - cover.open: gdo_door
+  - platform: gpio
+    id: "${id_prefix}_dry_contact_close"
+    pin:
+      number: ${dry_contact_close_pin}  # dry contact for closing door
+      inverted: true
+      mode:
+        input: true
+        pullup: true
+    name: "Dry contact close"
+    entity_category: diagnostic
+    on_press:
+      - if:
+          condition:
+            binary_sensor.is_off: ${id_prefix}_dry_contact_open
+          then:
+            - cover.close: gdo_door
+  - platform: gpio
+    id: "${id_prefix}_dry_contact_light"
+    pin:
+      number: ${dry_contact_light_pin}  # dry contact for triggering light
+      inverted: true
+      mode:
+        input: true
+        pullup: true
+    name: "Dry contact light"
+    entity_category: diagnostic
+    on_press:
+      then:
+        - light.toggle: gdo_light
+    disabled_by_default: false
+
+switch:
+  - platform: secplus_gdo
+    id: gdo_learn
+    type: learn
+    secplus_gdo_id: ${id_prefix}
+    name: Learn
+    icon: mdi:plus-box
+    entity_category: config
+
+  - platform: secplus_gdo
+    id: gdo_toggle_only
+    type: toggle_only
+    secplus_gdo_id: ${id_prefix}
+    name: Toggle Only
+    restore_mode: RESTORE_DEFAULT_OFF
+    icon: mdi:plus-box
+
+  - platform: secplus_gdo
+    id: gdo_obst_override
+    type: obst_override
+    secplus_gdo_id: ${id_prefix}
+    name: Obstruction Override
+    restore_mode: RESTORE_DEFAULT_OFF
+    icon: mdi:plus-box
+
+  - platform: secplus_gdo
+    id: gdo_close_notification
+    type: close_notification
+    secplus_gdo_id: ${id_prefix}
+    name: "Close Notification"
+    restore_mode: RESTORE_DEFAULT_OFF
+    icon: "mdi:bell-alert"
+
+select:
+  - platform: secplus_gdo
+    id: gdo_protocol
+    secplus_gdo_id: ${id_prefix}
+    name: protocol
+    icon: mdi:settings
+    entity_category: config
+
+number:
+  - platform: secplus_gdo
+    name: Opening duration
+    secplus_gdo_id: ${id_prefix}
+    entity_category: config
+    id: gdo_open_duration
+    type: open_duration
+    unit_of_measurement: "ms"
+
+  - platform: secplus_gdo
+    name: Closing duration
+    secplus_gdo_id: ${id_prefix}
+    entity_category: config
+    id: gdo_close_duration
+    type: close_duration
+    unit_of_measurement: "ms"
+
+  - platform: secplus_gdo
+    name: Client ID
+    secplus_gdo_id: ${id_prefix}
+    entity_category: config
+    id: gdo_client_id
+    type: client_id
+    mode: box
+
+  - platform: secplus_gdo
+    name: Rolling Code
+    secplus_gdo_id: ${id_prefix}
+    entity_category: config
+    id: gdo_rolling_code
+    type: rolling_code
+    mode: box
+
+  # Remidiates wall button brownouts by throttling TX activity
+  # 350ms recommened on 880LM units
+  - platform: secplus_gdo
+    name: Min Command Interval
+    secplus_gdo_id: ${id_prefix}
+    entity_category: config
+    id: gdo_min_command_interval
+    type: min_command_interval
+    mode: box
+    unit_of_measurement: "ms"
+
+  # Add Time to Close (TTC) control, 0s = disabled
+  - platform: secplus_gdo
+    name: Time Till Close
+    secplus_gdo_id: ${id_prefix}
+    entity_category: config
+    id: gdo_time_to_close
+    type: time_to_close
+    mode: box
+    unit_of_measurement: "s"
+
+button:
+  - platform: restart
+    name: Restart
+    id: restart_button
+    entity_category: config
+  - platform: factory_reset
+    name: Factory Reset
+    entity_category: config
+  - platform: template
+    name: Reset door timings
+    entity_category: config
+    on_press:
+      - number.set:
+          id: gdo_open_duration
+          value: 0
+      - number.set:
+          id: gdo_close_duration
+          value: 0
+      - button.press:
+          id: restart_button
+  - platform: template
+    name: Re-sync
+    entity_category: config
+    on_press:
+      - number.increment:
+          id: gdo_client_id
+      - button.press:
+          id: restart_button
+
+status_led:
+  pin: ${status_pin}

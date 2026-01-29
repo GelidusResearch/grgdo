@@ -1,0 +1,205 @@
+external_components:
+  - source:
+      type: git
+      url: https://github.com/gelidusresearch/esphome-secplus-gdo
+      ref: master
+    components: [ secplus_gdo ]
+    refresh: 1s
+  # - source:
+  #     type: local
+  #     path: components
+
+secplus_gdo:
+  id: ${id_prefix}
+  input_gdo_pin: ${uart_rx_pin}
+  output_gdo_pin: ${uart_tx_pin}
+  input_obst_pin: ${input_obst_pin} # Used to enable physical pin obstruction sensing otherwise usex secplus data
+
+sensor:
+  - platform: wifi_signal # Reports the WiFi signal strength/RSSI in dB
+    #name: "WiFi Signal dB"
+    id: wifi_signal_db
+    update_interval: 60s
+    entity_category: "diagnostic"
+  - platform: copy # Reports the WiFi signal strength in %
+    source_id: wifi_signal_db
+    name: "WiFi Signal Strength"
+    filters:
+      - lambda: return min(max(2 * (x + 100.0), 0.0), 100.0);
+    unit_of_measurement: "%"
+    entity_category: "diagnostic"
+    device_class: ""
+  - platform: secplus_gdo
+    secplus_gdo_id: ${id_prefix}
+    id: gdo_openings
+    type: openings
+    name: "Garage Door Openings"
+    unit_of_measurement: "openings"
+    icon: mdi:open-in-app
+  # - platform: secplus_gdo
+    # secplus_gdo_id: ${id_prefix}
+    # id: gdo_tof_distance
+    # type: tof_distance
+    # name: "Vehicle Measured Distance"
+    # unit_of_measurement: "cm"
+    # icon: mdi:open-in-app
+
+lock:
+  - platform: secplus_gdo
+    id: gdo_lock_remotes
+    secplus_gdo_id: ${id_prefix}
+    name: "Lock remotes"
+
+light:
+  - platform: secplus_gdo
+    name: Garage Door Light
+    secplus_gdo_id: ${id_prefix}
+    id: gdo_light
+
+cover:
+  - platform: secplus_gdo
+    name: Garage Door
+    secplus_gdo_id: ${id_prefix}
+    id: gdo_door
+
+binary_sensor:
+  - platform: secplus_gdo
+    name: "Garage Door Obstruction Sensor"
+    id: gdo_obst
+    secplus_gdo_id: ${id_prefix}
+    device_class: problem
+    type: obstruction
+
+  # - platform: secplus_gdo
+  #   name: "Garage Door Motor"
+  #   id: gdo_motor
+  #   secplus_gdo_id: ${id_prefix}
+  #   device_class: running
+  #   type: motor
+
+  - platform: secplus_gdo
+    name: $garage_sync_name
+    id: gdo_synced
+    secplus_gdo_id: ${id_prefix}
+    type: sync
+    device_class: connectivity
+
+  - platform: gpio
+    id: "${id_prefix}_dry_contact_open"
+    pin:
+      number: ${dry_contact_open_pin}  #  dry contact for opening door
+      inverted: true
+      mode:
+        input: true
+        pullup: true
+    name: "Dry contact open"
+    entity_category: diagnostic
+    on_press:
+      - if:
+          condition:
+            binary_sensor.is_off: ${id_prefix}_dry_contact_close
+          then:
+            - cover.open: gdo_door
+  - platform: gpio
+    id: "${id_prefix}_dry_contact_close"
+    pin:
+      number: ${dry_contact_close_pin}  # dry contact for closing door
+      inverted: true
+      mode:
+        input: true
+        pullup: true
+    name: "Dry contact close"
+    entity_category: diagnostic
+    on_press:
+      - if:
+          condition:
+            binary_sensor.is_off: ${id_prefix}_dry_contact_open
+          then:
+            - cover.close: gdo_door
+  # - platform: gpio
+  #   id: "${id_prefix}_dry_contact_light"
+  #   pin:
+  #     number: ${dry_contact_light_pin}  # dry contact for triggering light
+  #     inverted: true
+  #     mode:
+  #       input: true
+  #       pullup: true
+  #   name: "Dry contact light"
+  #   entity_category: diagnostic
+  #   on_press:
+  #     then:
+  #       - light.toggle: gdo_light
+  #   disabled_by_default: false
+
+switch:
+  - platform: secplus_gdo
+    id: gdo_toggle_only
+    type: toggle_only
+    secplus_gdo_id: ${id_prefix}
+    name: Toggle Only
+    icon: mdi:plus-box
+
+select:
+  - platform: secplus_gdo
+    id: gdo_protocol
+    secplus_gdo_id: ${id_prefix}
+    name: protocol
+    icon: mdi:settings
+    entity_category: config
+
+number:
+  - platform: secplus_gdo
+    name: Opening duration
+    secplus_gdo_id: ${id_prefix}
+    entity_category: config
+    id: gdo_open_duration
+    type: open_duration
+    unit_of_measurement: "ms"
+    internal: true
+
+  - platform: secplus_gdo
+    name: Closing duration
+    secplus_gdo_id: ${id_prefix}
+    entity_category: config
+    id: gdo_close_duration
+    type: close_duration
+    unit_of_measurement: "ms"
+
+  - platform: secplus_gdo
+    name: Client ID
+    secplus_gdo_id: ${id_prefix}
+    entity_category: config
+    id: gdo_client_id
+    internal: true
+    type: client_id
+    mode: box
+
+  - platform: secplus_gdo
+    name: Rolling Code
+    secplus_gdo_id: ${id_prefix}
+    entity_category: config
+    id: gdo_rolling_code
+    internal: true
+    type: rolling_code
+    mode: box
+
+button:
+  - platform: restart
+    name: Restart
+    id: restart_button
+    entity_category: config
+  - platform: factory_reset
+    name: Factory Reset
+    entity_category: config
+  - platform: template
+    name: Reset door timings
+    entity_category: config
+    on_press:
+      - number.set:
+          id: gdo_open_duration
+          value: 0
+      - number.set:
+          id: gdo_close_duration
+          value: 0
+      - button.press:
+          id: restart_button

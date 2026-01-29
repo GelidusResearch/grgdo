@@ -1,0 +1,14 @@
+sensor:
+  - platform: dht
+    model: DHT22
+    pin: ${dht22_pin}
+    temperature:
+      name: "Temperature"
+      accuracy_decimals: 1
+      filters:
+       - lambda: return x * (9.0/5.0) + 32.0;
+      unit_of_measurement: "°F"
+    humidity:
+      name: "Humidity"
+      accuracy_decimals: 1
+    update_interval: 60s

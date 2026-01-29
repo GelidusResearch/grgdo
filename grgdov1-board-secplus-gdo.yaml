@@ -1,0 +1,110 @@
+external_components:
+  - source: github://gelidusresearch/esphome-secplus-gdo
+    components: [ secplus_gdo ]
+    refresh: 0s
+
+substitutions:
+  device_name: grgdo
+  device_comment: Garage Door Controller
+  device_type: ESP32-C6-H4 WiFi6 BT5 IEEE802.15.4 Single Core + LP Core 160MHz
+  disp_name: GRGDOv3
+  update_time: 15s
+  id_prefix: grgdov3
+  friendly_name: "GRGDOv3"
+  uart_tx_pin: GPIO5            # J4 Pin 1 or 3 Red CTRL
+  uart_rx_pin: GPIO4            # J4 Pin 1 or 3 Red CTRL
+  input_obst_pin: GPIO20        # J4 Pin 4 Grey OBST - not required with secplus_gdo
+  dry_contact_open_pin: GPIO21  # J4 Pin 6 Green
+  dry_contact_close_pin: GPIO22 # J4 Pin 7 Blue
+  dry_contact_light_pin: GPIO23 # J4 Pin 8 Orange
+  tof_sda_pin: GPIO11           # GPIO11 = v3, GPIO26 = v2 board, GPIO3 = v1 board
+  tof_scl_pin: GPIO10           # GPIO10 = v3, GPIO25 = v2 board, GPIO1 = v1 board
+  dht22_pin: GPIO19             # AUX1:GPIO10, AUX2:GPIO19 = v3, AUX1:GPIO26 = v2, AUX1:GPIO3 = v1 board
+  status_pin: GPIO6
+  garage_door_cover_name: Garage Door
+  garage_light_name: Garage Light
+  garage_openings_name: Garage Openings
+  garage_lock_name: Lock
+  garage_motion_name: Motion
+  garage_obstruction_name: Obstruction
+  garage_motor_name: Motor
+  garage_button_name: Wall Button
+  garage_sync_name: Synced
+
+esphome:
+  name: ${device_name}
+  friendly_name: ${disp_name}
+  name_add_mac_suffix: true
+  project:
+    name: "Gelidus Research.Garage Door Controller"
+    version: "1.0"
+
+esp32:
+  board: esp32-c6-devkitc-1
+  flash_size: 4MB
+  variant: esp32c6
+  framework:
+    type: esp-idf
+
+# With packages you can more easily tune your configuration by
+# adding or removing variations as needed.
+# Just uncomment the lines for the features you want to enable.
+# This base configuration enables the correct pins for the ESP32-C6 board
+# Be aware the the v3 board has different pin assignments for the AUX ports
+# AUX1 (4Pin): GPIO11 and GPIO12, AUX2 (3Pin): GPIO19
+# The ToF and DHT22 sensors are connected to the AUX1 and AUX2 ports respectively. AUX1: ToF, AUX2: DHT22
+# You can use them for other DIY components as needed. Do not exceed 250ma of total current on these pins.
+
+
+# While RATGDO path are included, the ESP32-C6 board does not support RATGDO features at this time.
+# RATGDO needs to be refactored to work with the ESP-IDF framework at this time.
+# For now only SecPlus GDO features are supported on the ESP32-C6 board.
+
+packages:
+  remote_package_files:
+    url: https://github.com/gelidusresearch/grgdo
+    files:
+#      - path: packages/grgdo-dht22.yaml                    # enable DHT22 sensor
+#      - path: packages/grgdo-secplusgdo-tof.yaml           # enable ToF sensor
+#      - path: packages/ratgdo-base.yaml                    # enable base RATGDO firmware
+#      - path: packages/ratgdo-secplusv1.yaml               # enable RATGDO Security+v1 support and outputs
+#      - path: packages/ratgdo-secplusv2.yaml               # enable RATGDO Security+v2 support and outputs
+#      - path: packages/ratgdo-drycontact.yaml              # enable RATGDO Dry Contact support and outputs
+      - path: packages/secplusgdo-base.yaml                # enable base SecPlus GDO functionality
+#      - path: packages/secplusgdo-secplusv1.yaml           # configure SecPlus GDO Security+v1 outputs
+#      - path: packages/secplusgdo-secplusv2.yaml           # configure SecPlus GDO Security+v2 outputs
+
+    ref: main
+    refresh: 15s
+
+dashboard_import:
+  package_import_url: github://gelidusresearch/grgdo/grgdo-v3.yaml@main
+  import_full_config: false
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+
+ota:
+  - platform: esphome              # Works with Thread networks however ota updates will be slow
+  - platform: web_server           # Works with Thread networks
+
+wifi:
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ap_timeout: 20s
+
+captive_portal:                    # Comment out with Thread networks
+
+improv_serial:                     # Comment out with Thread networks
+
+safe_mode:                         # Highly recommended when making frequent changes
+
+web_server:                        # Works with Thread networks and will be slow on initial load
+  port: 80
+  version: 3
+#  username: !secret web_user      # enable for minimal security
+#  password: !secret web_password  # needs secrets file entries created first
