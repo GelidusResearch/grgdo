@@ -1,0 +1,12 @@
+sensor:
+  - platform: dht
+    model: DHT22
+    pin: ${dht22_pin}
+    temperature:
+      name: "Temperature"
+      accuracy_decimals: 1
+      unit_of_measurement: "°C"
+    humidity:
+      name: "Humidity"
+      accuracy_decimals: 1
+    update_interval: 60s

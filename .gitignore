@@ -1,0 +1,2 @@
+# Ignore ESPHome build and config files
+.esphome/
