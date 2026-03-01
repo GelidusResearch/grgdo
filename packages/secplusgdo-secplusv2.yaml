@@ -1,10 +1,10 @@
+esphome:
+  min_version: 2026.2.0
+
 external_components:
-  - source:
-      type: git
-      url: https://github.com/gelidusresearch/esphome-secplus-gdo
-      ref: ${branch}
+  - source: github://gelidusresearch/esphome-secplus-gdo@${branch}
     components: [ secplus_gdo ]
-    refresh: 1s
+    refresh: 1d
   # - source:
   #     type: local
   #     path: components

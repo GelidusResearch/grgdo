@@ -65,8 +65,8 @@ packages:
 #      - path: packages/ratgdo-drycontact.yaml              # enable RATGDO Dry Contact support and outputs - Not supported on ESP32-C6
 #      - path: packages/secplusgdo-secplusv1.yaml           # configure SecPlus GDO Security+v1 outputs
       - path: packages/secplusgdo-secplusv2.yaml           # configure SecPlus GDO Security+v2 outputs
-      - path: packages/secplusgdo-tof.yaml                 # enable ToF sensor
-      - path: packages/grgdo-dht22.yaml                    # enable DHT22 sensor (any firmware)
+#      - path: packages/secplusgdo-tof.yaml                 # enable ToF sensor
+#      - path: packages/grgdo-dht22.yaml                    # enable DHT22 sensor (any firmware)
 
     ref: main
     refresh: 1s
@@ -81,8 +81,8 @@ logger:
 
 # Enable Home Assistant API
 api:
-  #encryption:
-    #key: !secret api_encryption_key
+  encryption:
+    key: !secret api_encryption_key
 
 ota:
   - platform: esphome              # Works with Thread networks however ota updates will be slower than WiFi

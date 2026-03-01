@@ -64,13 +64,13 @@ packages:
 #      - path: packages/ratgdo-secplusv2.yaml               # enable RATGDO Security+v2 support and outputs
 #      - path: packages/ratgdo-drycontact.yaml              # enable RATGDO Dry Contact support and outputs
 #      - path: packages/secplusgdo-base.yaml                # enable base SecPlus GDO functionality
-      - path: packages/secplusgdo-secplusv1.yaml           # configure SecPlus GDO Security+v1 outputs
-#      - path: packages/secplusgdo-secplusv2.yaml           # configure SecPlus GDO Security+v2 outputs
-      - path: packages/secplusgdo-tof.yaml                 # enable ToF sensor
-      - path: packages/grgdo-dht22.yaml                    # enable DHT22 sensor (any firmware)
+#      - path: packages/secplusgdo-secplusv1.yaml           # configure SecPlus GDO Security+v1 outputs
+      - path: packages/secplusgdo-secplusv2.yaml           # configure SecPlus GDO Security+v2 outputs
+#      - path: packages/secplusgdo-tof.yaml                 # enable ToF sensor
+#      - path: packages/grgdo-dht22.yaml                    # enable DHT22 sensor (any firmware)
 
     ref: main
-    refresh: 1s
+    refresh: 1d
 
 dashboard_import:
   package_import_url: github://gelidusresearch/grgdo/grgdov3-board-secplus-gdo-wifi.yaml@main

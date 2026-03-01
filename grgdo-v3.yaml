@@ -1,19 +1,19 @@
 external_components:
   - source: github://gelidusresearch/esphome-secplus-gdo
     components: [ secplus_gdo ]
-    refresh: 0s
+    refresh: 1d
 
 substitutions:
   device_name: grgdo
   device_comment: Garage Door Controller
   device_type: ESP32-C6-H4 WiFi6 BT5 IEEE802.15.4 Single Core + LP Core 160MHz
   disp_name: GRGDOv3
-  update_time: 15s
   id_prefix: grgdov3
-  friendly_name: "GRGDOv3"
+  friendly_name: GRGDOv3
+  branch: master
   uart_tx_pin: GPIO5            # J4 Pin 1 or 3 Red CTRL
   uart_rx_pin: GPIO4            # J4 Pin 1 or 3 Red CTRL
-  input_obst_pin: GPIO20        # J4 Pin 4 Grey OBST - not required with secplus_gdo
+  input_obst_pin: None #GPIO20        # J4 Pin 4 Grey OBST - not required with secplus_gdo
   dry_contact_open_pin: GPIO21  # J4 Pin 6 Green
   dry_contact_close_pin: GPIO22 # J4 Pin 7 Blue
   dry_contact_light_pin: GPIO23 # J4 Pin 8 Orange
@@ -52,7 +52,6 @@ esp32:
   variant: esp32c6
   framework:
     type: esp-idf
-#    version: recommended
     sdkconfig_options:
 #      CONFIG_ESPTOOLPY_FLASHSIZE_4MB: y
 #      CONFIG_BT_BLE_50_FEATURES_SUPPORTED: y
@@ -89,15 +88,11 @@ packages:
 #      - path: packages/ratgdo-secplusv1.yaml               # enable RATGDO Security+v1 support and outputs
 #      - path: packages/ratgdo-secplusv2.yaml               # enable RATGDO Security+v2 support and outputs
 #      - path: packages/ratgdo-drycontact.yaml              # enable RATGDO Dry Contact support and outputs
-      - path: packages/secplusgdo-base.yaml                # enable base SecPlus GDO functionality
+#      - path: packages/secplusgdo-base.yaml                # enable base SecPlus GDO functionality
 #      - path: packages/secplusgdo-secplusv1.yaml           # configure SecPlus GDO Security+v1 outputs
-#      - path: packages/secplusgdo-secplusv2.yaml           # configure SecPlus GDO Security+v2 outputs
+      - path: packages/secplusgdo-secplusv2.yaml           # configure SecPlus GDO Security+v2 outputs
     ref: main
-    refresh: 15s
-  - include: packages/secplusgdo-secplusv1.yaml
-  light:
-    id: gdo_light
-    internal: true !remove
+    refresh: 1d
 
 # Enable logging
 logger:
@@ -106,8 +101,9 @@ logger:
 api:
 
 ota:
-  - platform: esphome              # Works with Thread networks however ota updates will be slow
-  - platform: web_server           # Works with Thread networks
+  - platform: esphome                # Works with Thread networks however ota updates can be slow with USB dongles
+    #password: !secret ota_password  # Recommended to enable setting a password once the config is established
+  - platform: web_server             # Works with Thread networks slow on initial load, may even time out
 
 wifi:
 
@@ -115,14 +111,14 @@ wifi:
   ap:
     ap_timeout: 20s
 
-captive_portal:                    # Comment out with Thread networks
+captive_portal:                      # Comment out with Thread networks
 
-improv_serial:                     # Comment out with Thread networks
+improv_serial:                       # Comment out with Thread networks
 
-safe_mode:                         # Highly recommended when making frequent changes
+safe_mode:                           # Highly recommended when making frequent changes
 
-web_server:                        # Works with Thread networks and will be slow on initial load
+web_server:                          # Works with Thread networks and will be slow on initial load
   port: 80
   version: 3
-#  username: !secret web_user      # enable for minimal security
-#  password: !secret web_password  # needs secrets file entries created first
+#  username: !secret web_user        # enable for minimal security
+#  password: !secret web_password    # needs secrets file entries created first

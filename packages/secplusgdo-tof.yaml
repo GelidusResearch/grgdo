@@ -1,40 +1,59 @@
+esphome:
+  min_version: 2026.2.0
+
 external_components:
-  - source:
-      type: git
-      url: https://github.com/gelidusresearch/esphome-secplus-gdo
-      ref: ${branch}
+  - source: github://gelidusresearch/esphome-secplus-gdo@${branch}
     components: [ secplus_gdo ]
-    refresh: 1s
+    refresh: 1d
+  - source: github://GelidusResearch/ToF
+    components: [vl53l1x]
+    refresh: 1d
   # - source:
   #     type: local
   #     path: components
 
+logger:
+  level: DEBUG
+  logs:
+    vl53l1x: ERROR
+
 secplus_gdo:
   id: ${id_prefix}
-  tof_sda_pin: ${tof_sda_pin}
-  tof_scl_pin: ${tof_scl_pin}
+  tof_distance_sensor: gdo_tof_distance_filtered
+
+i2c:
+  id: bus_a
+  sda: ${tof_sda_pin}
+  scl: ${tof_scl_pin}
+  scan: true
+  frequency: 400kHz
+
+vl53l1x:
+  id: gdo_tof_distance
+  name: "Vehicle Measured Distance"
+  i2c_id: bus_a
+  address: 0x29
+  long_range: true
+  timing_budget: 100ms
+  timeout: 250ms
+  update_interval: 1s
+  internal: true
+  filters:
+    - lambda: return x * 100.0;
+  unit_of_measurement: "cm"
 
 sensor:
-  - platform: secplus_gdo
-    secplus_gdo_id: ${id_prefix}
-    id: gdo_tof_distance
-    name: "Vehicle Measured Distance"
-    type: tof_distance
-    unit_of_measurement: "cm"
-    internal: true
-    filters:
-      - heartbeat: 250ms
-      - throttle: 1s
-
   - platform: copy
     source_id: gdo_tof_distance
     name: Vehicle Distance Measure Filtered
+    id: gdo_tof_distance_filtered
     filters:
       - quantile:           # remove outliers that are not in the 90th percentile
-          window_size: 16
+          window_size: 8
           send_every: 1
           quantile: 0.9
       - heartbeat: 2s
+    unit_of_measurement: "cm"
 
 binary_sensor:
   - platform: secplus_gdo
