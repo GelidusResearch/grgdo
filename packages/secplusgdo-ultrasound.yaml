@@ -1,0 +1,59 @@
+esphome:
+  min_version: 2026.2.0
+
+external_components:
+  - source: github://gelidusresearch/esphome-secplus-gdo@${branch}
+    components: [ secplus_gdo ]
+    refresh: 1d
+  # - source:
+  #     type: local
+  #     path: components
+
+secplus_gdo:
+  tof_distance_sensor: gdo_tof_distance
+
+sensor:
+  - platform: ultrasonic
+    id: gdo_tof_distance
+    trigger_pin: ${tof_sda_pin}
+    echo_pin: ${tof_scl_pin}
+    name: "Vehicle Distance"
+    update_interval: 1s
+
+binary_sensor:
+  - platform: secplus_gdo
+    secplus_gdo_id: ${id_prefix}
+    id: gdo_vehicle_parked
+    type: vehicle_parked
+    name: "Vehicle parked"
+
+  - platform: secplus_gdo
+    secplus_gdo_id: ${id_prefix}
+    id: gdo_vehicle_arriving
+    type: vehicle_arriving
+    name: "Vehicle arriving"
+
+  - platform: secplus_gdo
+    secplus_gdo_id: ${id_prefix}
+    id: gdo_vehicle_leaving
+    type: vehicle_leaving
+    name: "Vehicle leaving"
+
+number:
+  - platform: secplus_gdo
+    name: "Vehicle Parked Threshold"
+    secplus_gdo_id: ${id_prefix}
+    entity_category: config
+    id: gdo_vehicle_parked_threshold
+    type: vehicle_parked_threshold
+    mode: box
+    unit_of_measurement: "cm"
+
+  - platform: secplus_gdo
+    name: "Vehicle Parked Threshold Variance"
+    secplus_gdo_id: ${id_prefix}
+    entity_category: config
+    id: gdo_vehicle_parked_threshold_variance
+    type: vehicle_parked_threshold_variance
+    mode: box
+    unit_of_measurement: "cm"

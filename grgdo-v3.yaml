@@ -84,6 +84,7 @@ packages:
     files:
 #      - path: packages/grgdo-dht22.yaml                    # enable DHT22 sensor
 #      - path: packages/grgdo-secplusgdo-tof.yaml           # enable ToF sensor
+#      - path: packages/grgdo-secplusgdo-ultrasound.yaml    # enable Ultrasonic as a distance sensor
 #      - path: packages/ratgdo-base.yaml                    # enable base RATGDO firmware
 #      - path: packages/ratgdo-secplusv1.yaml               # enable RATGDO Security+v1 support and outputs
 #      - path: packages/ratgdo-secplusv2.yaml               # enable RATGDO Security+v2 support and outputs
