@@ -26,7 +26,7 @@ i2c:
   sda: ${tof_sda_pin}
   scl: ${tof_scl_pin}
   scan: true
-  frequency: 400kHz
+  frequency: 100kHz
 
 vl53l1x:
   id: gdo_tof_distance
