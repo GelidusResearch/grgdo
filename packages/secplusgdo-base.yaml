@@ -13,7 +13,7 @@ secplus_gdo:
   id: ${id_prefix}
   input_gdo_pin: ${uart_rx_pin}
   output_gdo_pin: ${uart_tx_pin}
-  input_obst_pin: ${input_obst_pin} # Used to enable physical pin obstruction sensing otherwise usex secplus data
+  #input_obst_pin: ${input_obst_pin} # Used to enable physical pin obstruction sensing otherwise usex secplus data
 
 sensor:
   - platform: wifi_signal # Reports the WiFi signal strength/RSSI in dB
@@ -36,13 +36,14 @@ sensor:
     name: "Garage Door Openings"
     unit_of_measurement: "openings"
     icon: mdi:open-in-app
-  # - platform: secplus_gdo
-    # secplus_gdo_id: ${id_prefix}
-    # id: gdo_tof_distance
-    # type: tof_distance
-    # name: "Vehicle Measured Distance"
-    # unit_of_measurement: "cm"
-    # icon: mdi:open-in-app
+
+#  - platform: secplus_gdo
+#    secplus_gdo_id: ${id_prefix}
+#    id: gdo_tof_distance
+#    type: tof_distance
+#    name: "Vehicle Measured Distance"
+#    unit_of_measurement: "cm"
+#    icon: mdi:open-in-app
 
 lock:
   - platform: secplus_gdo
@@ -70,12 +71,12 @@ binary_sensor:
     device_class: problem
     type: obstruction
 
-  # - platform: secplus_gdo
-  #   name: "Garage Door Motor"
-  #   id: gdo_motor
-  #   secplus_gdo_id: ${id_prefix}
-  #   device_class: running
-  #   type: motor
+#  - platform: secplus_gdo
+#    name: "Garage Door Motor"
+#    id: gdo_motor
+#    secplus_gdo_id: ${id_prefix}
+#    device_class: running
+#    type: motor
 
   - platform: secplus_gdo
     name: $garage_sync_name

@@ -1,7 +1,7 @@
 substitutions:
   device_name: grgdo
   device_comment: Garage Door Controller
-  device_type: ESP32-C6-H4 WiFi6 BT5 IEEE802.15.4 Single Core + LP Core 160MHz
+  device_type: ESP32-S BLE 4MB/360KB Dual Core 240MHz
   id_prefix: grgdov1
   friendly_name: "GRGDOv1"
   uart_tx_pin: GPIO22           # J4 Pin 1 or 3 Red CTRL
@@ -12,7 +12,7 @@ substitutions:
   dry_contact_light_pin: GPIO17 # J4 Pin 8 Orange
   tof_sda_pin: GPIO26           # v1 board=GPIO3 v2(USB-C) board=GPIO26
   tof_scl_pin: GPIO25           # v1 board=GPIO1 v2(USB-C) board=GPIO25
-  dht22_pin: GPIO3              # AUX1:GPIO10, AUX2:GPIO19 = v3, AUX1:GPIO26 = v2, AUX1:GPIO3 = v1 board
+  dht22_pin: GPIO26              # AUX1:GPIO10, AUX2:GPIO19 = v3, AUX1:GPIO26 = v2, AUX1:GPIO3 = v1 board, AUX2:GPIO27 = v2 board
   status_pin: GPIO4
 
 esphome:

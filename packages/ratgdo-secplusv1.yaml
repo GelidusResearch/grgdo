@@ -3,7 +3,7 @@ external_components:
   - source:
       type: git
       url: https://github.com/gelidusresearch/esphome-ratgdo.git
-      ref: 1.3.0
+      ref: 1.3.1
     components: [ ratgdo ]
     refresh: 1d
 
@@ -18,7 +18,6 @@ esp32:
   framework:
     type: arduino
 
-# Enable logging
 logger:
   baud_rate: 115200
 
@@ -27,20 +26,11 @@ api:
 
 ota:
   - platform: esphome
-
+    password: ""
+  - platform: web_server
 
 wifi:
-  power_save_mode: none
-  ssid: NONE
-  password: ""
-
   ap:
-    ssid: "GDO1"
-    password: ""
-    ap_timeout: 15s
-
-
-# improv_serial:    # Not available with Optional Add-ons and a v1 board
 
 captive_portal:
 
@@ -49,21 +39,10 @@ web_server:
 safe_mode:
 
 improv_serial:
+improv_ble:
 
 preferences:
-  flash_write_interval: 600s
-
-substitutions:
-  id_prefix: gdo1
-  friendly_name: "GDO1"
-  uart_tx_pin: GPIO22           # J4 Pin 1 Red or 3 Blue to Opener Red CTRL terminal
-  uart_rx_pin: GPIO21           # J4 Pin 1 Red or 3 Blue to Opener Red CTRL terminal
-  tof_sda_pin: GPIO26           # GPIO26 = v2 board GPIO3 = v1 board
-  tof_scl_pin: GPIO25           # GPIO25 = v2 board GPIO1 = v1 board
-  input_obst_pin: GPIO23        # J4 Pin 4 Grey OBST
-  dry_contact_open_pin: GPIO17  # J4 Pin 6 Green
-  dry_contact_close_pin: GPIO19 # J4 Pin 7 Blue
-  dry_contact_light_pin: GPIO18 # J4 Pin 8 Orange
+  flash_write_interval: 120s
 
 ratgdo:
   id: ${id_prefix}
@@ -72,7 +51,7 @@ ratgdo:
   input_obst_pin: ${input_obst_pin}
   tof_sda_pin: ${tof_sda_pin}
   tof_scl_pin: ${tof_scl_pin}
-  protocol: secplusv2
+  protocol: secplusv2           # one of secplusv2, secplusv1 or drycontact
 
 sensor:
   - platform: wifi_signal

@@ -8,7 +8,7 @@ substitutions:
   device_comment: Garage Door Controller
   device_type: ESP32-C6-H4 WiFi6 BT5 IEEE802.15.4 Single Core + LP Core 160MHz
   disp_name: GRGDOv3
-  id_prefix: grgdov3
+  id_prefix: grgdo
   friendly_name: GRGDOv3
   branch: master
   uart_tx_pin: GPIO5            # J4 Pin 1 or 3 Red CTRL
@@ -19,6 +19,8 @@ substitutions:
   dry_contact_light_pin: GPIO23 # J4 Pin 8 Orange
   tof_sda_pin: GPIO11           # GPIO11 = v3, GPIO26 = v2 board, GPIO3 = v1 board
   tof_scl_pin: GPIO10           # GPIO10 = v3, GPIO25 = v2 board, GPIO1 = v1 board
+  i2c_sda_pin: GPIO10           # GPIO10 = v3, GPIO25 = v2 board, GPIO3 = v1 board
+  i2c_scl_pin: GPIO11           # GPIO11 = v3, GPIO26 = v2 board, GPIO1 = v1 board
   dht22_pin: GPIO19             # AUX1:GPIO10, AUX2:GPIO19 = v3, AUX1:GPIO26 = v2, AUX1:GPIO3 = v1 board
   status_pin: GPIO6
   garage_door_cover_name: Garage Door
@@ -42,7 +44,7 @@ esphome:
     build_flags:
       - -Wl,--wrap=esp_panic_handler
   on_boot:
-    - priority: 800
+    - priority: -100
       then:
         - lambda: id(${id_prefix}).start_gdo();
 
@@ -84,6 +86,7 @@ packages:
     files:
 #      - path: packages/grgdo-dht22.yaml                    # enable DHT22 sensor
 #      - path: packages/grgdo-secplusgdo-tof.yaml           # enable ToF sensor
+#      - path: packages/grgdo-grtaq1.yaml                   # enable Air Quality sensor
 #      - path: packages/grgdo-secplusgdo-ultrasound.yaml    # enable Ultrasonic as a distance sensor
 #      - path: packages/ratgdo-base.yaml                    # enable base RATGDO firmware
 #      - path: packages/ratgdo-secplusv1.yaml               # enable RATGDO Security+v1 support and outputs
