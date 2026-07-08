@@ -10,7 +10,7 @@ external_components:
 
 substitutions:
   id_prefix: gdo
-  friendly_name: "GRGDO1"
+  friendly_name: "GDO1"
   uart_tx_pin: GPIO22           # J4 Pin 1 Red or 3 Blue to Opener Red CTRL terminal
   uart_rx_pin: GPIO21           # J4 Pin 1 Red or 3 Blue to Opener Red CTRL terminal
   input_obst_pin: GPIO23        # J4 Pin 4 Grey OBST
@@ -50,20 +50,23 @@ wifi:
 captive_portal:
 
 improv_serial:
-esp32_improv:
-  authorizer: none
 
 web_server:
 
 preferences:
   flash_write_interval: 120s
 
-# i2c:
-  sda: ${i2c_sda_pin}
-  scl: ${i2c_scl_pin}
-  id: bus_a
-  frequency: 100kHz
-  scan: true
+#i2c:
+#  - id: bus_a          # Optional I2C bus for ToF sensor
+#    frequency: 100kHz
+#    scan: true
+#    sda: ${tof_sda_pin}
+#    scl: ${tof_scl_pin}
+#  - id: bus_b           # Optional I2C bus for ENS/AHT/DHT22 sensors use bus_a for ToF sensor
+#    frequency: 100kHz
+#    scan: true
+#    sda: ${i2c_sda_pin}
+#    scl: ${i2c_scl_pin}
 
 ratgdo:
   id: ${id_prefix}
@@ -72,7 +75,7 @@ ratgdo:
   input_obst_pin: ${input_obst_pin}
   #tof_sda_pin: ${tof_sda_pin}  # uncomment with ToF Sensor
   #tof_scl_pin: ${tof_scl_pin}  # uncomment with ToF Sensor
-  #protocol: secplusv2           # one of secplusv2, secplusv1 or drycontact
+  protocol: secplusv2           # one of secplusv2, secplusv1 or drycontact
 
 sensor:
   - platform: ratgdo
@@ -133,19 +136,19 @@ sensor:
 #          quantile: .9     # Useful for surfaces that scatter the signal and other issues
 
 # Optional Add-on DHT22
-  # - platform: dht
-    # model: DHT22
-    # pin: ${dht22_pin}
-    # temperature:
-      # name: "Temperature"
-      # accuracy_decimals: 1
-      # filters:                                  # °F vs default °C
-       # - lambda: return x * (9.0/5.0) + 32.0;
-      # unit_of_measurement: "°F"
-    # humidity:
-      # name: "Humidity"
-      # accuracy_decimals: 1
-    # update_interval: 60s
+#  - platform: dht
+#    model: DHT22
+#    pin: ${dht22_pin}
+#    temperature:
+#      name: "Temperature"
+#      accuracy_decimals: 1
+#      filters:                                  # °F vs default °C
+#       - lambda: return x * (9.0/5.0) + 32.0;
+#      unit_of_measurement: "°F"
+#    humidity:
+#      name: "Humidity"
+#      accuracy_decimals: 1
+#    update_interval: 60s
 
 binary_sensor:
   - platform: ratgdo

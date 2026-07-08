@@ -8,7 +8,7 @@ substitutions:
   device_comment: Garage Door Controller
   device_type: ESP32-C6-H4 WiFi6 BT5 IEEE802.15.4 Single Core + LP Core 160MHz
   disp_name: GRGDOv3
-  id_prefix: grgdov3
+  id_prefix: grgdo
   friendly_name: GRGDOv3
   branch: master
   uart_tx_pin: GPIO5            # J4 Pin 1 or 3 Red CTRL
@@ -42,7 +42,7 @@ esphome:
     build_flags:
       - -Wl,--wrap=esp_panic_handler
   on_boot:
-    - priority: 800
+    - priority: -100
       then:
         - lambda: id(${id_prefix}).start_gdo();
 
