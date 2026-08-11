@@ -44,7 +44,7 @@ esphome:
     build_flags:
       - -Wl,--wrap=esp_panic_handler
   on_boot:
-    - priority: -100
+    - priority: 250
       then:
         - lambda: id(${id_prefix}).start_gdo();
 
@@ -78,7 +78,7 @@ esp32:
 
 dashboard_import:
   package_import_url: github://gelidusresearch/grgdo/grgdo-v3.yaml@main
-  import_full_config: false
+  import_full_config: true
 
 packages:
   remote_package_files:
@@ -86,7 +86,7 @@ packages:
     files:
 #      - path: packages/grgdo-dht22.yaml                    # enable DHT22 sensor
 #      - path: packages/grgdo-secplusgdo-tof.yaml           # enable ToF sensor
-#      - path: packages/grgdo-grtaq1.yaml                   # enable Air Quality sensor
+      - path: packages/grgdo-grtaq1.yaml                   # enable Air Quality sensor
 #      - path: packages/grgdo-secplusgdo-ultrasound.yaml    # enable Ultrasonic as a distance sensor
 #      - path: packages/ratgdo-base.yaml                    # enable base RATGDO firmware
 #      - path: packages/ratgdo-secplusv1.yaml               # enable RATGDO Security+v1 support and outputs
@@ -96,7 +96,7 @@ packages:
 #      - path: packages/secplusgdo-secplusv1.yaml           # configure SecPlus GDO Security+v1 outputs
       - path: packages/secplusgdo-secplusv2.yaml           # configure SecPlus GDO Security+v2 outputs
     ref: main
-    refresh: 1d
+    refresh: 0s
 
 # Enable logging
 logger:
