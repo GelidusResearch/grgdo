@@ -1,8 +1,8 @@
 # GRGDO setup guide ver 2026.03.18
 external_components:
-  - source: github://GelidusResearch/esphome-secplus-gdo
+  - source: github://GelidusResearch/esphome-secplus-gdo@${branch}
     components: [ secplus_gdo ]
-    refresh: 0s
+    refresh: always
 # ToF Sensor
 #  - source: github://GelidusResearch/ToF
 #    components: [vl53l1x]
@@ -52,7 +52,7 @@ esphome:
 dashboard_import:
   package_import_url: github://gelidusresearch/grgdo/imports/secplus.gdo.ultra.yaml@main
   import_full_config: false
-  
+
 
 wifi:
 

@@ -4,10 +4,10 @@ esphome:
 external_components:
   - source: github://gelidusresearch/esphome-secplus-gdo@${branch}
     components: [ secplus_gdo ]
-    refresh: 1d
+    refresh: always
   - source: github://GelidusResearch/ToF
     components: [vl53l1x]
-    refresh: 1d
+    refresh: always
   # - source:
   #     type: local
   #     path: components

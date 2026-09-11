@@ -61,7 +61,7 @@ packages:
 #      - path: packages/ratgdo-drycontact.yaml             # enable RATGDO Dry Contact support and outputs
 #      - path: packages/secplusgdo-secplusv1.yaml          # configure SecPlus GDO to default with Security+v1 outputs
       - path: packages/secplusgdo-secplusv2.yaml          # configure SecPlus GDO to default with Security+v2 outputs
-#      - path: packages/grgdo-secplusgdo-ultrasound.yaml     # enable SecPlus GDO with GRGDO ultrasound sensor
+      - path: packages/grgdo-secplusgdo-ultrasound.yaml     # enable SecPlus GDO with GRGDO ultrasound sensor
 
     ref: main
     refresh: always

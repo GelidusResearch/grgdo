@@ -4,7 +4,7 @@ esphome:
 external_components:
   - source: github://gelidusresearch/esphome-secplus-gdo
     components: [ secplus_gdo ]
-    refresh: 1d
+    refresh: always
   # - source:
   #     type: local
   #     path: components

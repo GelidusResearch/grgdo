@@ -73,7 +73,7 @@ binary_sensor:
     entity_category: diagnostic
     type: button
   - platform: secplus_gdo
-    name: $garage_sync_name
+    name: ${garage_sync_name}
     id: gdo_synced
     secplus_gdo_id: ${id_prefix}
     type: sync

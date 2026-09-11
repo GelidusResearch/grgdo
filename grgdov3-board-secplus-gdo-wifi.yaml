@@ -70,7 +70,7 @@ packages:
 #      - path: packages/grgdo-dht22.yaml                    # enable DHT22 sensor (any firmware)
 
     ref: main
-    refresh: 1d
+    refresh: always
 
 dashboard_import:
   package_import_url: github://gelidusresearch/grgdo/grgdov3-board-secplus-gdo-wifi.yaml@main
