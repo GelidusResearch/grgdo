@@ -34,6 +34,10 @@ esphome:
   project:
     name: "Gelidus Research.Garage Door Controller"
     version: "2.5"
+  on_boot:
+  - priority: -100
+    then:
+      - lambda: id(${id_prefix}).start_gdo();
 
 esp32:
   board: esp32dev

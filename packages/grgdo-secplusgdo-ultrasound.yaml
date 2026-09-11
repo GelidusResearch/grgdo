@@ -18,7 +18,11 @@ sensor:
     trigger_pin: ${tof_sda_pin}
     echo_pin: ${tof_scl_pin}
     name: "Vehicle Distance"
+    timeout: 3.5m
     update_interval: 1s
+    filters:
+      - lambda: return x * 100.0;
+    unit_of_measurement: "cm"
 
 binary_sensor:
   - platform: secplus_gdo
