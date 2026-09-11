@@ -166,6 +166,8 @@ select:
     name: protocol
     icon: mdi:settings
     entity_category: config
+    initial_option: "security+2.0"
+
 
 number:
   - platform: secplus_gdo

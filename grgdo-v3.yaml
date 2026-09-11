@@ -1,7 +1,7 @@
 external_components:
   - source: github://gelidusresearch/esphome-secplus-gdo
     components: [ secplus_gdo ]
-    refresh: 1d
+    refresh: always
 
 substitutions:
   device_name: grgdo

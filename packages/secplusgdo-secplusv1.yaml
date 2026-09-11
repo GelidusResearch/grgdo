@@ -4,7 +4,7 @@ esphome:
 external_components:
   - source: github://gelidusresearch/esphome-secplus-gdo@${branch}
     components: [ secplus_gdo ]
-    refresh: 1d
+    refresh: always
   # - source:
   #     type: local
   #     path: components
@@ -149,6 +149,7 @@ select:
     name: protocol
     icon: mdi:settings
     entity_category: config
+    initial_option: "security+1.0"
 
 number:
   - platform: secplus_gdo
