@@ -32,9 +32,9 @@ esphome:
   name_add_mac_suffix: true
   project:
     name: "Gelidus Research.Garage Door Controller"
-    version: "1.0.0"
+    version: "3.1"
   on_boot:
-    - priority: 100
+    - priority: -100
       then:
         lambda: id(${id_prefix}).start_gdo();
 
@@ -94,10 +94,7 @@ wifi:
 
   # Enable fallback hotspot (captive portal) in case wifi connection fails
   ap:
-    ap_timeout: 20s
-  on_connect:
-    then:
-      lambda: id(${id_prefix}).start_gdo();
+
 
 captive_portal:                    # Comment out with Thread networks
 
