@@ -1,6 +1,6 @@
 # GRGDO setup guide ver 2026.03.18
 external_components:
-  - source: github://GelidusResearch/esphome-secplus-gdo@${branch}
+  - source: github://GelidusResearch/esphome-secplus-gdo@master
     components: [ secplus_gdo ]
     refresh: always
 # ToF Sensor
@@ -234,7 +234,7 @@ binary_sensor:
     entity_category: diagnostic
     type: button
   - platform: secplus_gdo
-    name: $garage_sync_name
+    name: "Synced"
     id: gdo_synced
     secplus_gdo_id: ${id_prefix}
     type: sync

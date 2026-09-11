@@ -2,7 +2,7 @@ esphome:
   min_version: 2026.2.0
 
 external_components:
-  - source: github://gelidusresearch/esphome-secplus-gdo@${branch}
+  - source: github://gelidusresearch/esphome-secplus-gdo@master
     components: [ secplus_gdo ]
     refresh: always
   - source: github://GelidusResearch/ToF

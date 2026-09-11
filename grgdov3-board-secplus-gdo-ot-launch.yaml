@@ -14,7 +14,6 @@ substitutions:
   disp_name: GRGDOv3
   id_prefix: grgdov3
   friendly_name: "GRGDOv3"
-  branch: master
   uart_tx_pin: GPIO5            # J4 Pin 1 or 3 Red CTRL
   uart_rx_pin: GPIO4            # J4 Pin 1 or 3 Red CTRL
   input_obst_pin: None #GPIO20        # J4 Pin 4 Grey OBST - not required with secplus_gdo
