@@ -5,9 +5,6 @@ external_components:
   - source: github://gelidusresearch/esphome-secplus-gdo@master
     components: [ secplus_gdo ]
     refresh: always
-  # - source:
-  #     type: local
-  #     path: components
 
 secplus_gdo:
   id: ${id_prefix}
@@ -16,7 +13,6 @@ secplus_gdo:
   #input_obst_pin: ${input_obst_pin}
   dc_open_pin: ${dry_contact_open_pin}            # J4 Pin 6 Green active-low: dry contact door fully open sensor
   dc_close_pin: ${dry_contact_close_pin}          # J4 Pin 7 Blue active-low: dry contact door fully closed sensor
-
 
 light:
   - platform: secplus_gdo
@@ -81,18 +77,12 @@ binary_sensor:
     secplus_gdo_id: ${id_prefix}
     type: sync
     device_class: connectivity
-
-  - platform: template
-    id: "${id_prefix}_dry_contact_open"
-    name: "Door open sensor"
-    entity_category: diagnostic
-    lambda: return !gpio_get_level((gpio_num_t) ${dry_contact_open_pin});
-
-  - platform: template
-    id: "${id_prefix}_dry_contact_close"
-    name: "Door closed sensor"
-    entity_category: diagnostic
-    lambda: return !gpio_get_level((gpio_num_t) ${dry_contact_close_pin});
+  - platform: secplus_gdo
+    type: dc_open_pin
+    name: "Door Open"
+  - platform: secplus_gdo
+    type: dc_close_pin
+    name: "Door Closed"
 
 switch:
   - platform: secplus_gdo
