@@ -67,8 +67,8 @@ esp32:
 # This base configuration enables the correct pins for the ESP32-C6 board
 # Be aware the the v3 board has different pin assignments for the AUX ports
 # AUX1 (4Pin): GPIO11 and GPIO12, AUX2 (3Pin): GPIO19
-# The ToF and DHT22 sensors are connected to the AUX1 and AUX2 ports respectively. AUX1: ToF, AUX2: DHT22
-# You can use them for other DIY components as needed. Do not exceed 250ma of total current on these pins.
+# The ToF and DHT22 sensors are connected to the AUX1 and AUX2 ports respectively. AUX1: ToF, AUX2: DHT22/AHT20
+# You can use them for other DIY components as needed. Do not exceed 200ma of total current on these pins.
 
 # While RATGDO path are included, the ESP32-C6 board does not support RATGDO features at this time.
 # RATGDO needs to be refactored to work with the ESP-IDF framework at this time.
