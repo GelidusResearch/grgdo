@@ -5,7 +5,6 @@ substitutions:
   disp_name: GRGDOv3
   id_prefix: grgdov3
   friendly_name: "GRGDOv3"
-  branch: master
   uart_tx_pin: GPIO5            # J4 Pin 1 or 3 Red CTRL
   uart_rx_pin: GPIO4            # J4 Pin 1 or 3 Red CTRL
   input_obst_pin: None #GPIO20        # J4 Pin 4 Grey OBST - not required with secplus_gdo
@@ -14,6 +13,8 @@ substitutions:
   dry_contact_light_pin: GPIO23 # J4 Pin 8 Orange
   tof_sda_pin: GPIO11           # GPIO11 = v3, GPIO26 = v2 board, GPIO3 = v1 board
   tof_scl_pin: GPIO10           # GPIO10 = v3, GPIO25 = v2 board, GPIO1 = v1 board
+  i2c_sda_pin: GPIO10           # GPIO11 = v3, GPIO26 = v2 board, GPIO3 = v1 board
+  i2c_scl_pin: GPIO11           # GPIO10 = v3, GPIO25 = v2 board, GPIO1 = v1 board
   dht22_pin: GPIO19             # AUX1:GPIO10, AUX2:GPIO19 = v3, AUX1:GPIO26 = v2, AUX1:GPIO3 = v1 board
   status_pin: GPIO6
   garage_door_cover_name: Garage Door
@@ -32,9 +33,9 @@ esphome:
   name_add_mac_suffix: true
   project:
     name: "Gelidus Research.Garage Door Controller"
-    version: "1.0.0"
+    version: "3.1"
   on_boot:
-    - priority: 100
+    - priority: -100
       then:
         lambda: id(${id_prefix}).start_gdo();
 
@@ -68,9 +69,10 @@ packages:
       - path: packages/secplusgdo-secplusv2.yaml           # configure SecPlus GDO Security+v2 outputs
 #      - path: packages/secplusgdo-tof.yaml                 # enable ToF sensor
 #      - path: packages/grgdo-dht22.yaml                    # enable DHT22 sensor (any firmware)
+#      - path: packages/grgdo-aht20.yaml                    # enable AHT20 sensor
 
     ref: main
-    refresh: 1d
+    refresh: always
 
 dashboard_import:
   package_import_url: github://gelidusresearch/grgdo/grgdov3-board-secplus-gdo-wifi.yaml@main
@@ -94,10 +96,7 @@ wifi:
 
   # Enable fallback hotspot (captive portal) in case wifi connection fails
   ap:
-    ap_timeout: 20s
-  on_connect:
-    then:
-      lambda: id(${id_prefix}).start_gdo();
+
 
 captive_portal:                    # Comment out with Thread networks
 

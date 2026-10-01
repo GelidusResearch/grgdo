@@ -2,9 +2,9 @@ esphome:
   min_version: 2026.2.0
 
 external_components:
-  - source: github://gelidusresearch/esphome-secplus-gdo@${branch}
+  - source: github://gelidusresearch/esphome-secplus-gdo@master
     components: [ secplus_gdo ]
-    refresh: 1d
+    refresh: always
   # - source:
   #     type: local
   #     path: components
@@ -18,7 +18,11 @@ sensor:
     trigger_pin: ${tof_sda_pin}
     echo_pin: ${tof_scl_pin}
     name: "Vehicle Distance"
+    timeout: 3.5m
     update_interval: 1s
+    filters:
+      - lambda: return x * 100.0;
+    unit_of_measurement: "cm"
 
 binary_sensor:
   - platform: secplus_gdo

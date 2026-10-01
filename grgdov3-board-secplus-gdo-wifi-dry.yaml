@@ -1,12 +1,3 @@
-# This YAML is a prestage for grgdov3-board-secplus-gdo-thread.yaml
-# It includes all the same configuration as grgdov3-board-secplus-gdo-thread.yaml
-# Wifi is preloaded to facilitate easier Thread commissioning
-# The Thread configuration is imported from grgdov3-board-secplus-gdo-thread.yaml
-# A TLV secret will need to be created in secrets.yaml for Thread commissioning to work
-# Do not rename the device or it will fail to OTA the firmware.
-# Renaiming is best done after Thread commissioning is complete and is truly not required.
-# You can name the device in Home Assistant after commissioning the way you wish it to appear.
-
 substitutions:
   device_name: grgdo
   device_comment: Garage Door Controller
@@ -22,6 +13,8 @@ substitutions:
   dry_contact_light_pin: GPIO23 # J4 Pin 8 Orange
   tof_sda_pin: GPIO11           # GPIO11 = v3, GPIO26 = v2 board, GPIO3 = v1 board
   tof_scl_pin: GPIO10           # GPIO10 = v3, GPIO25 = v2 board, GPIO1 = v1 board
+  i2c_sda_pin: GPIO10           # GPIO11 = v3, GPIO26 = v2 board, GPIO3 = v1 board
+  i2c_scl_pin: GPIO11           # GPIO10 = v3, GPIO25 = v2 board, GPIO1 = v1 board
   dht22_pin: GPIO19             # AUX1:GPIO10, AUX2:GPIO19 = v3, AUX1:GPIO26 = v2, AUX1:GPIO3 = v1 board
   status_pin: GPIO6
   garage_door_cover_name: Garage Door
@@ -40,7 +33,7 @@ esphome:
   name_add_mac_suffix: true
   project:
     name: "Gelidus Research.Garage Door Controller"
-    version: "1.0.0"
+    version: "3.1"
   on_boot:
     - priority: -100
       then:
@@ -73,14 +66,17 @@ packages:
 #      - path: packages/ratgdo-drycontact.yaml              # enable RATGDO Dry Contact support and outputs
 #      - path: packages/secplusgdo-base.yaml                # enable base SecPlus GDO functionality
 #      - path: packages/secplusgdo-secplusv1.yaml           # configure SecPlus GDO Security+v1 outputs
-      - path: packages/secplusgdo-secplusv2.yaml           # configure SecPlus GDO Security+v2 outputs
+#      - path: packages/secplusgdo-secplusv2.yaml           # configure SecPlus GDO Security+v2 outputs
+#      - path: packages/secplusgdo-tof.yaml                 # enable ToF sensor
+      - path: packages/secplusgdo-drycontact.yaml          # enable Dry Contact support and outputs
 #      - path: packages/grgdo-dht22.yaml                    # enable DHT22 sensor (any firmware)
-      - path: packages/secplusgdo-tof.yaml                 # enable ToF sensor
+#      - path: packages/grgdo-aht20.yaml                    # enable AHT20 sensor
+
     ref: main
-    refresh: 1s
+    refresh: always
 
 dashboard_import:
-  package_import_url: github://gelidusresearch/grgdo/grgdov3-board-secplus-gdo-thread.yaml@main
+  package_import_url: github://gelidusresearch/grgdo/grgdov3-board-secplus-gdo-wifi.yaml@main
   import_full_config: true
 
 
@@ -101,7 +97,7 @@ wifi:
 
   # Enable fallback hotspot (captive portal) in case wifi connection fails
   ap:
-    ap_timeout: 20s
+
 
 captive_portal:                    # Comment out with Thread networks
 
