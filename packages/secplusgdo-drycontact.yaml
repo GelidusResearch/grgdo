@@ -78,11 +78,17 @@ binary_sensor:
     type: sync
     device_class: connectivity
   - platform: secplus_gdo
+    name: "Garage Door Open Sensor"
+    id: gdo_dc_open_pin
+    secplus_gdo_id: ${id_prefix}
+    entity_category: diagnostic
     type: dc_open_pin
-    name: "Door Open"
   - platform: secplus_gdo
+    name: "Garage Door Closed Sensor"
+    id: gdo_dc_close_pin
+    secplus_gdo_id: ${id_prefix}
+    entity_category: diagnostic
     type: dc_close_pin
-    name: "Door Closed"
 
 switch:
   - platform: secplus_gdo
