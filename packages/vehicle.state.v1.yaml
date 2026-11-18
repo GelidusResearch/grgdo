@@ -1,0 +1,158 @@
+# Vehicle Detection State Machines for GRGDO (one independent machine per vehicle)
+# States: Absent, Arriving, Parked, Leaving
+# Inputs: gdo_ultra_distance1 / gdo_ultra_distance2 from grgdo-secplusgdo-ultrasound-2x.yaml (cm)
+
+substitutions:
+  target_distance: "0.8"  # Default target parking distance in meters for each vehicle
+  distance_tolerance: "0.1"  # Tolerance for detection (±0.1m)
+  transition_delay: "15s"  # Delay before state transitions
+
+# Text sensors for vehicle state
+text_sensor:
+  - platform: template
+    name: "Vehicle 1 State"
+    id: vehicle_1_state
+    icon: "mdi:car"
+    update_interval: never  # Updated by automation
+
+  - platform: template
+    name: "Vehicle 2 State"
+    id: vehicle_2_state
+    icon: "mdi:car"
+    update_interval: never  # Updated by automation
+
+# Number input for target distance configuration
+number:
+  - platform: template
+    name: "Vehicle 1 Target Parking Distance"
+    id: target_parking_distance_1
+    min_value: 0.5
+    max_value: 2.0
+    step: 0.05
+    unit_of_measurement: "m"
+    mode: box
+    optimistic: true
+    restore_value: true
+    initial_value: ${target_distance}
+    icon: "mdi:ruler"
+
+  - platform: template
+    name: "Vehicle 2 Target Parking Distance"
+    id: target_parking_distance_2
+    min_value: 0.5
+    max_value: 2.0
+    step: 0.05
+    unit_of_measurement: "m"
+    mode: box
+    optimistic: true
+    restore_value: true
+    initial_value: ${target_distance}
+    icon: "mdi:ruler"
+
+  - platform: template
+    name: "Parking Detection Tolerance"
+    id: distance_tolerance_setting
+    min_value: 0.1
+    max_value: 0.5
+    step: 0.05
+    unit_of_measurement: "m"
+    mode: box
+    optimistic: true
+    restore_value: true
+    initial_value: ${distance_tolerance}
+    icon: "mdi:approximately-equal"
+
+# Binary sensors for state conditions
+binary_sensor:
+  - platform: template
+    name: "Vehicle 1 In Range"
+    id: vehicle_1_in_range
+    internal: true
+    icon: "mdi:car-connected"
+    lambda: |-
+      float distance = id(gdo_ultra_distance1).state / 100.0f;  // Sensor reports cm
+      if (distance > 0.12) {  // Ignore invalid readings below 0.12m
+        float target = id(target_parking_distance_1).state;
+        float tolerance = id(distance_tolerance_setting).state;
+        return (distance >= (target - tolerance) && distance <= (target + tolerance));
+      }
+      return false;
+
+  - platform: template
+    name: "Vehicle 2 In Range"
+    id: vehicle_2_in_range
+    internal: true
+    icon: "mdi:car-connected"
+    lambda: |-
+      float distance = id(gdo_ultra_distance2).state / 100.0f;  // Sensor reports cm
+      if (distance > 0.12) {  // Ignore invalid readings below 0.12m
+        float target = id(target_parking_distance_2).state;
+        float tolerance = id(distance_tolerance_setting).state;
+        return (distance >= (target - tolerance) && distance <= (target + tolerance));
+      }
+      return false;
+
+# Interval for state machine logic (runs both vehicle machines)
+interval:
+  - interval: 1s
+    then:
+      - lambda: |-
+          static uint32_t change_time[2] = {0, 0};
+          static bool timer_active[2] = {false, false};
+          uint32_t current_time = millis();
+
+          auto step = [&](int i, text_sensor::TextSensor *sensor, bool in_range) {
+            const char *tag = i == 0 ? "vehicle_1_state" : "vehicle_2_state";
+            std::string current_state = sensor->state;
+
+            if (current_state.empty()) {
+              sensor->publish_state("Absent");
+              current_state = "Absent";
+            }
+
+            if (current_state == "Absent") {
+              if (in_range) {
+                sensor->publish_state("Arriving");
+                change_time[i] = current_time;
+                timer_active[i] = true;
+                ESP_LOGI(tag, "Vehicle detected - State: Arriving");
+              }
+            }
+            else if (current_state == "Arriving") {
+              if (!in_range) {
+                sensor->publish_state("Absent");
+                timer_active[i] = false;
+                ESP_LOGI(tag, "Vehicle left before parking - State: Absent");
+              }
+              else if (timer_active[i] && (current_time - change_time[i] >= 15000)) {
+                sensor->publish_state("Parked");
+                timer_active[i] = false;
+                ESP_LOGI(tag, "Vehicle parked - State: Parked");
+              }
+            }
+            else if (current_state == "Parked") {
+              if (!in_range) {
+                sensor->publish_state("Leaving");
+                change_time[i] = current_time;
+                timer_active[i] = true;
+                ESP_LOGI(tag, "Vehicle leaving - State: Leaving");
+              }
+            }
+            else if (current_state == "Leaving") {
+              if (in_range) {
+                sensor->publish_state("Parked");
+                timer_active[i] = false;
+                ESP_LOGI(tag, "Vehicle returned - State: Parked");
+              }
+              else if (timer_active[i] && (current_time - change_time[i] >= 15000)) {
+                sensor->publish_state("Absent");
+                timer_active[i] = false;
+                ESP_LOGI(tag, "Vehicle departed - State: Absent");
+              }
+            }
+          };
+
+          step(0, id(vehicle_1_state), id(vehicle_1_in_range).state);
+          step(1, id(vehicle_2_state), id(vehicle_2_in_range).state);
+
+# Include this file in your main configuration to provide vehicle state management with packages:
