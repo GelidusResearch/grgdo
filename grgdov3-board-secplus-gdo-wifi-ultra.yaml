@@ -21,6 +21,8 @@ substitutions:
   aux1_pin5: GPIO10             # Ultrasonic 1 echo
   aux2_pin4: GPIO19             # Ultrasonic 2 trigger
   aux2_pin5: GPIO7              # Ultrasonic 2 echo
+  vehicle_1_name: "Vehicle 1"
+  vehicle_2_name: "Vehicle 2"
   dht22_pin: GPIO19             # AUX1:GPIO10, AUX2:GPIO19 = v3, AUX1:GPIO26 = v2, AUX1:GPIO3 = v1 board
   status_pin: GPIO6
   garage_door_cover_name: Garage Door

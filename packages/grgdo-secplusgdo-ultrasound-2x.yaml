@@ -14,7 +14,7 @@ sensor:
     id: gdo_ultra_distance1
     trigger_pin: ${aux1_pin4}
     echo_pin: ${aux1_pin5}
-    name: "Vehicle 1 Distance"
+    name: "${vehicle_1_name} Vehicle Distance"
     timeout: 3.5m
     update_interval: 1s
     filters:
@@ -25,7 +25,7 @@ sensor:
     id: gdo_ultra_distance2
     trigger_pin: ${aux2_pin4}
     echo_pin: ${aux2_pin5}
-    name: "Vehicle 2 Distance"
+    name: "${vehicle_2_name} Vehicle Distance"
     timeout: 3.5m
     update_interval: 1s
     filters:
