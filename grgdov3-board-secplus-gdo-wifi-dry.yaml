@@ -33,7 +33,7 @@ esphome:
   name_add_mac_suffix: true
   project:
     name: "Gelidus Research.Garage Door Controller"
-    version: "3.1"
+    version: "3.2"
   on_boot:
     - priority: -100
       then:
