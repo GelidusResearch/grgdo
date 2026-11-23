@@ -94,6 +94,13 @@ packages:
 
 # Enable logging
 logger:
+  level: DEBUG
+  logs:
+    secplus_gdo: DEBUG
+    secplus_gdo.vehicle: DEBUG
+    gdolib: DEBUG
+    ot_main: ERROR
+    esp-idf: ERROR
 
 # Enable Home Assistant API
 api:
