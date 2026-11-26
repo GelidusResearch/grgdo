@@ -58,15 +58,21 @@ packages:
     files:
 #      - path: packages/grgdo-dht22.yaml                   # enable DHT22 sensor
 #      - path: packages/grgdo-secplusgdo-tof.yaml          # enable ToF sensor
-#      - path: packages/ratgdo-base.yaml                   # enable base RATGDO firmware
-#      - path: packages/ratgdo-secplusv1.yaml              # enable RATGDO Security+v1 support and outputs
-#      - path: packages/ratgdo-secplusv2.yaml              # enable RATGDO Security+v2 support and outputs
-#      - path: packages/ratgdo-drycontact.yaml             # enable RATGDO Dry Contact support and outputs
 #      - path: packages/secplusgdo-secplusv1.yaml          # configure SecPlus GDO to default with Security+v1 outputs
       - path: packages/secplusgdo-secplusv2.yaml          # configure SecPlus GDO to default with Security+v2 outputs
 #      - path: packages/grgdo-secplusgdo-ultrasound.yaml   # enable SecPlus GDO with GRGDO ultrasound sensor
       - path: packages/grgdo-aht20.yaml                    # enable AHT20 sensor
 
+#      - path: packages/grgdo-aht20-fahrenheit.yaml           # enable AHT20 with Fahrenheit sensor
+#      - path: packages/grgdo-dht22-fahrenheit.yaml           # enable DHT22 with Fahrenheit sensor
+#      - path: packages/grgdo-grth1.yaml                      # enable GRTH1 temperature and humidity sensor
+#      - path: packages/grgdo-grtaq1.yaml                     # enable Air Quality sensor
+#      - path: packages/grgdo-secplusgdo-ultrasound-2x.yaml   # enable two Ultrasonic distance sensors (Vehicle 1 and Vehicle 2)
+#      - path: packages/grgdo-secplusgdo-ultrasound-aux2.yaml # enable Ultrasonic as a distance sensor on AUX2
+#      - path: packages/vehicle.state.v1.yaml                 # enable independent Vehicle 1 and Vehicle 2 state machines (requires ultrasound-2x)
+#      - path: packages/secplusgdo-auto.yaml                  # enable auto protocol enabled SecPlus GDO functionality
+#      - path: packages/secplusgdo-base.yaml                  # enable base SecPlus GDO functionality
+#      - path: packages/secplusgdo-drycontact.yaml            # enable Dry Contact support and outputs
     ref: main
     refresh: always
 
